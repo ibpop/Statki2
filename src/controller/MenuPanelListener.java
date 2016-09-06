@@ -77,6 +77,10 @@ public class MenuPanelListener implements ActionListener {
                     playerContainer.setMyShips(mainFrame.getMySpeceShipRectangles());
                     playerContainer.setGameState(PlayerContainer.GameState.GAME);
                     mainFrame.hideEnemyShips();
+                    int myShipsLeft = playerContainer.getCurrentPlayer().getNumberOfShips();
+                    mainFrame.getMyShipPanel().setLabel(myShipsLeft);
+                    int enemyShipsLeft = playerContainer.getEnemyPlayer().getNumberOfShips();
+                    mainFrame.getEnemyShipPanel().setLabel(enemyShipsLeft);
                     break;
                 case "EXIT":
                     System.exit(0);
