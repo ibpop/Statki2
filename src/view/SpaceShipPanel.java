@@ -36,7 +36,7 @@ public class SpaceShipPanel extends JPanel {
 
         shipsLeftToSetPanel = new JPanel(new GridBagLayout());
         GridBagConstraints cShipsLeft = new GridBagConstraints();
-        shipsLeftToSetLabel = new JLabel("Statki do rozstawienia: " + 5);
+        shipsLeftToSetLabel = new JLabel();
         shipsLeftToSetPanel.add(shipsLeftToSetLabel);
         cShipsLeft.gridx = 0;
         cShipsLeft.gridy = 1;
