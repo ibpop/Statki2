@@ -39,9 +39,9 @@ public class MainFrame extends JFrame {
         playerPanel = new PlayerPanel();
 
         myShipPanel = new GamePanel("Moje statki");
-        myShipPanel.setLabel(5);
+        //myShipPanel.setLabel();
         enemyShipPanel = new GamePanel("Statki wroga");
-        enemyShipPanel.setLabel(5);
+        //enemyShipPanel.setLabel(5);
         spaceShipsPanel = new SpaceShipPanel();
 
         allPanel = new JPanel();
@@ -96,12 +96,12 @@ public class MainFrame extends JFrame {
         enemyShipPanel.setCells(playerContainer.getEnemyShip());
         playerContainer.getEnemyShip().getMyRectangles();
 
-
+                
         gridBagConstraints.gridx = 1;
         myShipPanel.removeAllListeners();
         //myShipPanel.setCells(new MyRectangleContainer(spaceShipsPanel.getGamePanel().getCells().getMyRectangles()));
         myShipPanel.setCells(spaceShipsPanel.getGamePanel().getCells());
-
+              
         allPanel.add(myShipPanel, gridBagConstraints);
 
         //mGamePanel.addComponentListener(mMyComponentListener);
