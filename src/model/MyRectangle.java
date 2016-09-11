@@ -87,9 +87,10 @@ public class MyRectangle extends Rectangle {
         color = NORMAL;
         if(status == Status.NEAR){
             status = Status.NORMAL;
-        } else if(status == Status.SHIP){
-            color = Color.DARK_GRAY;
         }
+//        } else if(status == Status.SHIP){
+//            color = Color.DARK_GRAY;
+//        }
     }
 
     public void sunk(){
