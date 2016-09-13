@@ -1,9 +1,11 @@
 package model;
 
+import java.io.Serializable;
+
 /**
  * Created by Mateo on 2016-06-04.
  */
-public class MyRectangleContainer {
+public class MyRectangleContainer implements Serializable{
     private int columnNumber, rowNumber;
     private MyRectangle[][] myRectangles;
     private boolean isInited = false;

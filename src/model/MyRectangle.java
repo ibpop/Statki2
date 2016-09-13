@@ -172,6 +172,11 @@ public class MyRectangle extends Rectangle {
     public void setStatus(Status status) {
         this.status = status;
     }
+    
+    public void setStatusOnline(Status status, Color color) {
+        this.status = status;
+        this.color = color;
+    }
 
     public boolean isForShoot(){
         if(status != Status.HIT && status != Status.MISSED && status != Status.SUNK)

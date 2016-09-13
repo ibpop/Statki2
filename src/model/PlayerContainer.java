@@ -78,6 +78,11 @@ public class PlayerContainer {
         ComputerPlayer player = (ComputerPlayer) playersMap.get(PlayerType.ENEMY);
         return player.getShoot();
     }
+    
+    public void shootMeOnline(int rowNumber, int columnNumber){
+        playersMap.get(PlayerType.ME).shoot(rowNumber, columnNumber);
+    
+    }
 
     public void shootMe(int rowNumber, int columnNumber){
         playersMap.get(PlayerType.ME).shoot(rowNumber, columnNumber);

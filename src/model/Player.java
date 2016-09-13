@@ -79,7 +79,7 @@ public class Player {
                     ship.sunk();
                     lastShootDestructive = true;
                     MainFrame mainFrame = MainFrame.getInstance();
-                    int shipsLeft = getNumberOfShipsToSet();
+                    int shipsLeft = getNumberOfShips();
                     mainFrame.getSpaceShipsPanel().getGamePanel().setLabel(shipsLeft);
                 }
             }
