@@ -3,9 +3,12 @@ package model;
 import java.io.Serializable;
 
 /**
- * Created by Mateo on 2016-06-04.
+ * Klasa-kontener. Przetrzymuje wszystkie pola
+ * z mapy danego gracza.
+ * @author blazej
  */
-public class MyRectangleContainer implements Serializable{
+public class MyRectangleContainer implements Serializable {
+
     private int columnNumber, rowNumber;
     private MyRectangle[][] myRectangles;
     private boolean isInited = false;
@@ -16,32 +19,19 @@ public class MyRectangleContainer implements Serializable{
         this.columnNumber = columnNumber;
         this.rowNumber = rowNumber;
         myRectangles = new MyRectangle[rowNumber][columnNumber];
-
     }
 
     public MyRectangleContainer(MyRectangle[][] myRectangles) {
         this.rowNumber = myRectangles.length;
         this.columnNumber = myRectangles[0].length;
-        //this.myRectangles = myRectangles;
-
         this.myRectangles = new MyRectangle[rowNumber][columnNumber];
+        
         for (int i = 0; i < rowNumber; i++) {
             for (int j = 0; j < columnNumber; j++) {
                 this.myRectangles[i][j] = new MyRectangle(myRectangles[i][j]);
             }
-            //MyRectangle [] tmp = myRectangles[i];
-
-            //this.myRectangles[i] = tmp.clone();
-            //this.myRectangles[i] = new MyRectangle[columnNumber];
-            //System.arraycopy(tmp, 0, this.myRectangles[i], 0, columnNumber);
         }
-//        for(int i = 0; i < rowNumber; i++) {
-//            for (int j = 0; j < columnNumber; j++) {
-//
-//            }
-//        }
     }
-
 
     public void addRectangle(int rowNumber, int columnNumber, MyRectangle myRectangle) {
         myRectangles[rowNumber][columnNumber] = myRectangle;
@@ -54,8 +44,9 @@ public class MyRectangleContainer implements Serializable{
     public boolean isInited() {
         for (int i = 0; i < rowNumber; i++) {
             for (int j = 0; j < columnNumber; j++) {
-                if (myRectangles[i][j] == null)
+                if (myRectangles[i][j] == null) {
                     return false;
+                }
             }
         }
         return true;
@@ -65,6 +56,15 @@ public class MyRectangleContainer implements Serializable{
         return myRectangles;
     }
 
+    /**
+     * Metoda odpowiada za zmianę koloru wyświetlanych pól
+     * podczas rozstawiania statków.
+     * @param rowNumber
+     * @param columnNumber
+     * @param size rozmiar statku (liczba masztów)
+     * @param shipPosition pionowa lub pozioma
+     * @param startFromCenter czy środek statku znajduje się w miejscu kursora
+     */
     public void highlightShip(int rowNumber, int columnNumber, int size, ShipPosition shipPosition, boolean startFromCenter) {
         int begin, current;
         MyRectangle tmp;
@@ -72,8 +72,9 @@ public class MyRectangleContainer implements Serializable{
         boolean isError = false;
 
         if (lastHighlightedShip != null) {
-            for (MyRectangle rect : lastHighlightedShip.getMyRectangles())
+            for (MyRectangle rect : lastHighlightedShip.getMyRectangles()) {
                 rect.setNormalAfterHighlight();
+            }
         }
 
         lastHighlightedShip = new Ship();
@@ -105,13 +106,11 @@ public class MyRectangleContainer implements Serializable{
                     //ustawienie statusu bliskich
                     if (isShipExited) {
                         tmp.setError();
-                    } else {
-                        if (!tmp.highlightForShip()) {
-                            //jezeli natrafimy na klocek ze statusem near to przerywamy
-                            //i kolorujemy caly statek na czerwono w petli ponizej
-                            isError = true;
-                            break;
-                        }
+                    } else if (!tmp.highlightForShip()) {
+                        //jezeli natrafimy na klocek ze statusem near to przerywamy
+                        //i kolorujemy caly statek na czerwono w petli ponizej
+                        isError = true;
+                        break;
                     }
                     lastHighlightedShip.addRectangles(tmp);
                 }
@@ -148,15 +147,11 @@ public class MyRectangleContainer implements Serializable{
                     tmp = getRectangle(rowNumber, current++);
                     if (isShipExited) {
                         tmp.setError();
-                    } else {
-                        if (!tmp.highlightForShip()) {
-                            isError = true;
-                            break;
-                        }
+                    } else if (!tmp.highlightForShip()) {
+                        isError = true;
+                        break;
                     }
                     lastHighlightedShip.addRectangles(tmp);
-
-
                 }
 
                 if (isError) {
@@ -169,25 +164,26 @@ public class MyRectangleContainer implements Serializable{
 
                     }
                 }
-
                 break;
         }
     }
 
+    /**
+     * Metoda ustawia pola dookoła statku na status NEAR.
+     * Dzięku temu nie można postawić obok niego innego statku.
+     * @return boolean
+     */
     public boolean chooseLastShip() {
         if (lastHighlightedShip != null) {
-
             int rowNumber, columnNumber;
-
-            //for (MyRectangle rect : lastHighlightedShip.getMyRectangles()) {
-            for (int i =0 ; i < lastHighlightedShip.getMyRectangles().size(); i++) {
+            
+            for (int i = 0; i < lastHighlightedShip.getMyRectangles().size(); i++) {
                 MyRectangle rect = lastHighlightedShip.getMyRectangles().get(i);
-                if (!rect.setShip())
+                if (!rect.setShip()) {
                     return false;
-                else {
+                } else {
                     rowNumber = rect.getRowNumber();
                     columnNumber = rect.getColumnNumber();
-                    //System.out.print(" RowNmuber " + rowNumber + " columnNumber " + columnNumber);
                     switch (lastHighlightedShip.getShipPosition()) {
                         case VERTICAL:
                             //ustawienie bocznych column statku na status NEAR
@@ -207,7 +203,6 @@ public class MyRectangleContainer implements Serializable{
                             if (rowNumber > 0 && getRectangle(rowNumber - 1, columnNumber).getStatus() != MyRectangle.Status.SHIP) {
                                 getRectangle(rowNumber - 1, columnNumber).setIsNearToShip();
                             }
-
 
                             break;
                         case HORIZONTAL:
@@ -233,66 +228,68 @@ public class MyRectangleContainer implements Serializable{
                     }
                 }
             }
-
-
-            //lastHighlightedShip.clear();
             return true;
         }
         return false;
     }
 
-    public void setMissedArroundMyRectangles(Ship ship){
-
+    /**
+     * Metoda ustawia pola dookoła statku
+     * na status MISSED. Używana po zatopieniu statku. Dzięki niej komputer nie
+     * strzela dookoła zatopionego statku unikając marnowania strzałów.
+     * @param ship
+     */
+    public void setMissedArroundMyRectangles(Ship ship) {
         int rowNumber, columnNumber;
-        for (int i =0 ; i < ship.getMyRectangles().size(); i++) {
+        
+        for (int i = 0; i < ship.getMyRectangles().size(); i++) {
             MyRectangle rect = ship.getMyRectangles().get(i);
-                rowNumber = rect.getRowNumber();
-                columnNumber = rect.getColumnNumber();
-                System.out.println(" RowNmuber " + rowNumber + " columnNumber " + columnNumber);
-                switch (ship.getShipPosition()) {
-                    case VERTICAL:
-                        //ustawienie bocznych column statku na status NEAR
-                        if (columnNumber > 0) {
-                            getRectangle(rowNumber, columnNumber - 1).shoot();
-                        }
+            rowNumber = rect.getRowNumber();
+            columnNumber = rect.getColumnNumber();
+            System.out.println(" RowNmuber " + rowNumber + " columnNumber " + columnNumber);
+            switch (ship.getShipPosition()) {
+                case VERTICAL:
+                    //ustawienie bocznych column statku na status MISSED
+                    if (columnNumber > 0) {
+                        getRectangle(rowNumber, columnNumber - 1).shoot();
+                    }
 
-                        if (columnNumber < this.columnNumber - 1) {
-                            getRectangle(rowNumber, columnNumber + 1).shoot();
-                        }
+                    if (columnNumber < this.columnNumber - 1) {
+                        getRectangle(rowNumber, columnNumber + 1).shoot();
+                    }
 
-                        //ustawienie gornych wierszy na status NEAR jezeli istnieja i nie sa juz zaznaczone
-                        if (rowNumber + 1 < this.rowNumber && getRectangle(rowNumber + 1, columnNumber).getStatus() != MyRectangle.Status.SHIP) {
-                            getRectangle(rowNumber + 1, columnNumber).shoot();
-                        }
+                    //ustawienie gornych wierszy na status MISSED jezeli istnieja i nie sa juz zaznaczone
+                    if (rowNumber + 1 < this.rowNumber && getRectangle(rowNumber + 1, columnNumber).getStatus() != MyRectangle.Status.SHIP) {
+                        getRectangle(rowNumber + 1, columnNumber).shoot();
+                    }
 
-                        if (rowNumber > 0 && getRectangle(rowNumber - 1, columnNumber).getStatus() != MyRectangle.Status.SHIP) {
-                            getRectangle(rowNumber - 1, columnNumber).shoot();
-                        }
+                    if (rowNumber > 0 && getRectangle(rowNumber - 1, columnNumber).getStatus() != MyRectangle.Status.SHIP) {
+                        getRectangle(rowNumber - 1, columnNumber).shoot();
+                    }
 
+                    break;
+                case HORIZONTAL:
+                    if (rowNumber > 0) {
+                        getRectangle(rowNumber - 1, columnNumber).shoot();
 
-                        break;
-                    case HORIZONTAL:
-                        if (rowNumber > 0) {
-                            getRectangle(rowNumber - 1, columnNumber).shoot();
+                    }
 
-                        }
+                    if (rowNumber < this.rowNumber - 1) {
+                        getRectangle(rowNumber + 1, columnNumber).shoot();
 
-                        if (rowNumber < this.rowNumber - 1) {
-                            getRectangle(rowNumber + 1, columnNumber).shoot();
+                    }
 
-                        }
+                    if (columnNumber + 1 < this.columnNumber && getRectangle(rowNumber, columnNumber + 1).getStatus() != MyRectangle.Status.SHIP) {
+                        getRectangle(rowNumber, columnNumber + 1).shoot();
+                    }
 
-                        if (columnNumber + 1 < this.columnNumber && getRectangle(rowNumber, columnNumber + 1).getStatus() != MyRectangle.Status.SHIP) {
-                            getRectangle(rowNumber, columnNumber + 1).shoot();
-                        }
+                    if (columnNumber > 0 && getRectangle(rowNumber, columnNumber - 1).getStatus() != MyRectangle.Status.SHIP) {
+                        getRectangle(rowNumber, columnNumber - 1).shoot();
+                    }
 
-                        if (columnNumber > 0 && getRectangle(rowNumber, columnNumber - 1).getStatus() != MyRectangle.Status.SHIP) {
-                            getRectangle(rowNumber, columnNumber - 1).shoot();
-                        }
-
-                        break;
-                }
+                    break;
             }
+        }
 
     }
 
@@ -318,6 +315,11 @@ public class MyRectangleContainer implements Serializable{
         }
     }
 
+    /**
+     * Metoda zwraca pole
+     * z najwyższym prawdopodobieństwem znajdowania się na nim statku.
+     * @return pole z najwyższym prawdopodobieństwem
+     */
     public MyRectangle getHighestProbablityMyRectangle() {
         MyRectangle rect = myRectangles[0][0];
         for (int i = 0; i < rowNumber; i++) {
@@ -356,8 +358,8 @@ public class MyRectangleContainer implements Serializable{
         }
     }
 
-    public boolean highlightMyRectangle(int rowNumber, int columnNumber ){
-        if(lastHighlightedRectangle != null){
+    public boolean highlightMyRectangle(int rowNumber, int columnNumber) {
+        if (lastHighlightedRectangle != null) {
             lastHighlightedRectangle.setNormalAfterHighlight();
         }
         lastHighlightedRectangle = getRectangle(rowNumber, columnNumber);

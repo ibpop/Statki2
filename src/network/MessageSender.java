@@ -1,17 +1,16 @@
 package network;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.SocketException;
 
 import model.DataPacket;
 import model.MyRectangleContainer;
-import model.MyShipsPacket;
-
+/**
+ * Sender do komunikacji sieciowej. Wysyła informacje o strzałach.
+ * @author blazej
+ */
 public class MessageSender {
 
     private static byte[] sentData;
@@ -43,37 +42,15 @@ public class MessageSender {
         System.out.println("Sent: " + new String(sentData));
 
     }
-
-//    public void sendMyShips(MyRectangleContainer myShips) throws IOException {
-//        sentSocket = new DatagramSocket();
-//
-//        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-//        ObjectOutputStream out = null;
-//        try {
-//            out = new ObjectOutputStream(bos);
-//            out.writeObject(myShips);
-//            byte[] myShipsBytes = bos.toByteArray();
-//            sentData = myShipsBytes;
-//            DatagramPacket sentPacket = new DatagramPacket(sentData,
-//                    sentData.length, ipAddress, port);
-//            sentSocket.send(sentPacket);
-//            System.out.println("Sent myShips");
-//        } finally {
-//            try {
-//                if (out != null) {
-//                    out.close();
-//                }
-//            } catch (IOException ex) {
-//                // ignore close exception
-//            }
-//            try {
-//                bos.close();
-//            } catch (IOException ex) {
-//                // ignore close exception
-//            }
-//        }
-//    }
-
+/**
+ * Metoda wywoływana w odpowiedzi na informacje uzyskane od przeciwnika.
+ * Informuje przeciwnika o rezultacie, jaki dał jego strzał.
+ * @param callback
+ * @param row
+ * @param col
+ * @param numberOfShips
+ * @throws IOException 
+ */
     public void send(int callback, int row, int col, int numberOfShips)
             throws IOException {
         sentSocket = new DatagramSocket();
@@ -82,6 +59,5 @@ public class MessageSender {
                 sentData.length, ipAddress, port);
         sentSocket.send(sentPacket);
         System.out.println("Sent: " + new String(sentData));
-
     }
 }

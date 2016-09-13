@@ -11,7 +11,11 @@ import java.net.SocketException;
 import model.DataPacket;
 import model.MyRectangleContainer;
 import model.MyShipsPacket;
-
+/**
+ * Sender używany do wysyłania informacji o statkach na mapie. Używany
+ * przy ewentualnej serializacji.
+ * @author blazej
+ */
 public class MyShipsSender {
 
     private static byte[] sentData;
@@ -43,7 +47,8 @@ public class MyShipsSender {
         System.out.println("Sent: " + new String(sentData));
 
     }
-    public void sendCallback(MyRectangleContainer myShips) throws IOException{
+
+    public void sendCallback(MyRectangleContainer myShips) throws IOException {
         sendMyShips(myShips);
     }
 
@@ -76,5 +81,4 @@ public class MyShipsSender {
             }
         }
     }
-
 }

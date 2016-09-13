@@ -1,16 +1,18 @@
 package view;
 
-import controller.NoNameException;
+import model.NoNameException;
 import controller.MenuPanelListener;
 import model.PlayerContainer;
 
 import javax.swing.*;
 import java.awt.*;
-
 /**
- * Created by Mateo on 2016-05-30.
+ * Klasa odpowiadająca za drugi widok gry. Wybór rodzaju gry oraz wprowadzanie
+ * nazwy gracza.
+ * @author blazej
  */
 public class PlayerPanel extends JPanel {
+
     private JLabel playerNameLabel;
     private JTextField playerName;
     private JButton spaceShipsButton;
@@ -39,7 +41,6 @@ public class PlayerPanel extends JPanel {
         c.weightx = 1;
         c.weighty = 1;
 
-
         c.gridx = 0;
         c.gridy = 0;
         add(vsComputerButton, c);
@@ -59,21 +60,20 @@ public class PlayerPanel extends JPanel {
 
         menuPanelListener = MenuPanelListener.getInstance();
         spaceShipsButton.addActionListener(menuPanelListener);
-        //playerName.addActionListener(menuPanelListener);
     }
 
-    public String getPlayerName() throws NoNameException{
-        if(playerName.getText().length() == 0) throw new NoNameException();
+    public String getPlayerName() throws NoNameException {
+        if (playerName.getText().length() == 0) {
+            throw new NoNameException();
+        }
         return playerName.getText();
     }
 
-    public PlayerContainer.GameMode getGameMode(){
-        if(vsComputerButton.isSelected())
+    public PlayerContainer.GameMode getGameMode() {
+        if (vsComputerButton.isSelected()) {
             return PlayerContainer.GameMode.VS_COMPUTER;
-        else
+        } else {
             return PlayerContainer.GameMode.VS_HUMAN;
-        
+        }
     }
-
-
 }

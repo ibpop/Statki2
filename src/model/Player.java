@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import view.MainFrame;
 
 /**
- * Created by Mateo on 2016-05-26.
+ * Klasa reprezentuje gracza.
+ * @author blazej
  */
-
 public class Player {
 
     private String name;
@@ -16,52 +16,67 @@ public class Player {
     protected int rowNumber;
     protected int columnNumber;
     //indeks tablicy + 1 oznacza ilosc masztow a wartosc ilosc statkow do rozstawienia
-    //protected int [] shipToSet = new int[] {2, 2, 2, 1, 1};
-    protected int [] shipToSet = new int[] {0, 2, 0, 0, 1};
+    protected int [] shipToSet = new int[] {1, 1, 1, 1, 1};
+    //protected int[] shipToSet = new int[]{0, 2, 0, 0, 1}; //do testow
     private int mastLeftNumber;
     private ArrayList<Ship> myShips;
     private boolean lastShootDestructive = false;
 
-    public Player(String name){
+    public Player(String name) {
         this.name = name;
         rowNumber = GridPanel.getRowNumber();
         columnNumber = GridPanel.getRowNumber();
         myRectangles = new MyRectangleContainer(columnNumber, rowNumber);
         myShips = new ArrayList<Ship>();
 
-        for(int i =0; i < shipToSet.length; i++)
-            mastLeftNumber += (i+1) * shipToSet[i];
+        for (int i = 0; i < shipToSet.length; i++) {
+            mastLeftNumber += (i + 1) * shipToSet[i];
+        }
     }
-    
-    public int getNumberOfShips(){
+
+    /**
+     * Liczy ile statków posiada gracz.
+     * @return liczba statków
+     */
+    public int getNumberOfShips() {
         int number = 0;
-        for(Ship s : myShips){
-            if(!s.isSunk())
+        for (Ship s : myShips) {
+            if (!s.isSunk()) {
                 number++;
+            }
         }
         return number;
     }
 
-    public int getShipSizeToSet(){
+    /**
+     * Zwraca rozmiar statku, który ma być ustawiony.
+     * @return rozmiar statku
+     */
+    public int getShipSizeToSet() {
         int result = 0;
-        for(int i = shipToSet.length - 1; i >= 0; i--){
-            if(shipToSet[i] > 0){
-                result = i+1;
+        for (int i = shipToSet.length - 1; i >= 0; i--) {
+            if (shipToSet[i] > 0) {
+                result = i + 1;
                 break;
             }
         }
-        return  result;
+        return result;
     }
 
-    public void setShip(int size, Ship ship){
-        if(size > 0){
-            shipToSet[size-1] = shipToSet[size-1] - 1;
+    /**
+     * Metoda dodaje dany statek do kolekcji statków gracza.
+     * @param size
+     * @param ship
+     */
+    public void setShip(int size, Ship ship) {
+        if (size > 0) {
+            shipToSet[size - 1] = shipToSet[size - 1] - 1;
             myShips.add(ship);
         }
 
     }
 
-    public MyRectangleContainer getMyRectangles(){
+    public MyRectangleContainer getMyRectangles() {
         return myRectangles;
     }
 
@@ -69,13 +84,19 @@ public class Player {
         this.myRectangles = myRectangles;
     }
 
-    public void shoot(int rowNumber, int columnNumber){
-        if(getMyRectangles().shoot(rowNumber, columnNumber)) {
+    /**
+     * Metoda odpowiadająca za wykonanie strzału gracza.
+     * @param rowNumber
+     * @param columnNumber
+     */
+    public void shoot(int rowNumber, int columnNumber) {
+        if (getMyRectangles().shoot(rowNumber, columnNumber)) {
             lastShootDestructive = false;
-            for(Ship ship: myShips){
-                if(ship.contains(rowNumber, columnNumber))
+            for (Ship ship : myShips) {
+                if (ship.contains(rowNumber, columnNumber)) {
                     System.out.println("Ship is sunk " + ship.isSunk());
-                if(ship.contains(rowNumber, columnNumber) && ship.isSunk()){
+                }
+                if (ship.contains(rowNumber, columnNumber) && ship.isSunk()) {
                     ship.sunk();
                     lastShootDestructive = true;
                     MainFrame mainFrame = MainFrame.getInstance();
@@ -95,19 +116,20 @@ public class Player {
         return lastShootDestructive;
     }
 
-    public boolean isBeaten(){
-        if(mastLeftNumber == 0)
+    public boolean isBeaten() {
+        if (mastLeftNumber == 0) {
             return true;
-        else
+        } else {
             return false;
+        }
     }
-    
-    public int getNumberOfShipsToSet(){
+
+    public int getNumberOfShipsToSet() {
         int number = 0;
-        
-        for(int i = 0; i < shipToSet.length; i++)
+
+        for (int i = 0; i < shipToSet.length; i++) {
             number += shipToSet[i];
-            
+        }
         return number;
     }
 }

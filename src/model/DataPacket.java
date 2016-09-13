@@ -2,6 +2,10 @@ package model;
 
 import model.PlayerContainer.PlayerType;
 
+/**
+ * Definiuje pakiet danych wysyłanych przez sieć do przeciwnika.
+ * @author blazej
+ */
 public class DataPacket {
 
     private PlayerType player;
@@ -16,6 +20,12 @@ public class DataPacket {
         this.shipsLeft = ships;
     }
 
+    /**
+     * Zamienia ciąg znaków w postaci String na
+     * typ tej klasy. "Parser danych"
+     * @param dataReceived String zawierający przesłane dane.
+     * @return Nowa klasa DataPacket
+     */
     public static DataPacket stringToDataPacket(String dataReceived) {
         String[] st = dataReceived.split(" ");
         PlayerType player;
@@ -30,6 +40,12 @@ public class DataPacket {
         return new DataPacket(player, row, column, shipsLeft);
     }
 
+    /**
+     * Wybiera odpowiednie dane z klasy i pakuje je do
+     * typu String.
+     * @param dataPacket Obiekt zawierający informacje sieciowe.
+     * @return String z szablonem informacji sieciowych.
+     */
     public static String packetToString(DataPacket dataPacket) {
         StringBuilder sb = new StringBuilder();
         String player = null;

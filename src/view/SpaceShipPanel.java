@@ -7,9 +7,9 @@ import javax.swing.*;
 import javax.swing.plaf.basic.BasicArrowButton;
 import java.awt.*;
 import sun.text.normalizer.CharTrie;
-
 /**
- * Created by Mateo on 2016-06-02.
+ * Klasa reprezentująca widok gry, który odpowiada za rozstawienie statków.
+ * @author blazej
  */
 public class SpaceShipPanel extends JPanel {
 
@@ -28,16 +28,15 @@ public class SpaceShipPanel extends JPanel {
     private JTextField portReceive;
     private JTextField ip;
 
-
     public String getIp() {
         return ip.getText();
     }
 
-    public int getPortSend() throws NumberFormatException{
+    public int getPortSend() throws NumberFormatException {
         return Integer.parseInt(portSend.getText());
     }
 
-    public int getPortReceive() throws NumberFormatException{
+    public int getPortReceive() throws NumberFormatException {
         return Integer.parseInt(portReceive.getText());
     }
 
@@ -108,7 +107,10 @@ public class SpaceShipPanel extends JPanel {
         c.gridx = 2;
         add(arrowPanel, c);
     }
-
+/**
+ * Metoda wstawiająca panel sieciowy do SpaceShipPanel jeżeli wybrano
+ * rozgrywkę online.
+ */
     public void setNetworkPanel() {
         networkPanel = new JPanel(new GridBagLayout());
         GridBagConstraints cNetwork = new GridBagConstraints();
@@ -120,8 +122,6 @@ public class SpaceShipPanel extends JPanel {
 
         portReceive = new JTextField("", 10);
         JLabel portLabelReceive = new JLabel("Port IN");
-
-       
 
         ip = new JTextField("localhost", 10);
         JLabel ipLabel = new JLabel("IP");
@@ -177,5 +177,4 @@ public class SpaceShipPanel extends JPanel {
     public void setShipsLeftLabel(int numberOfShips) {
         shipsLeftToSetLabel.setText("Statki do rozstawienia: " + numberOfShips);
     }
-
 }

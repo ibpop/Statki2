@@ -7,7 +7,11 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-
+/**
+ * Klasa odpowiada za prezentację statków gracza oraz przeciwnika podczas
+ * rozgrywki.
+ * @author blazej
+ */
 public class GamePanel extends JPanel {
 
     private GridBagConstraints c;

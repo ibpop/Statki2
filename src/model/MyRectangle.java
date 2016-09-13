@@ -3,7 +3,8 @@ package model;
 import java.awt.*;
 
 /**
- * Created by Mateo on 2016-05-26.
+ * Definiuje pojedyncze pole mapy gracza.
+ * @author blazej
  */
 public class MyRectangle extends Rectangle {
 
@@ -23,7 +24,7 @@ public class MyRectangle extends Rectangle {
 
     public MyRectangle(int height, int width, int x, int y, int rowNumber, int columnNumber){
         super(height, width, x, y);
-
+        
         this.rowNumber = rowNumber;
         this.columnNumber = columnNumber;
     }
@@ -36,6 +37,11 @@ public class MyRectangle extends Rectangle {
         this.columnNumber = myRectangle.columnNumber;
     }
 
+    /**
+     * Metoda zmienia kolor pola jeżeli możliwe jest
+     * umiejscowienie na nim statku.
+     * @return boolean
+     */
     public boolean highlightForShip(){
         if(color == NORMAL && status != Status.NEAR && status !=Status.SUNK){
             color = HIGHLIGHT;
@@ -50,6 +56,11 @@ public class MyRectangle extends Rectangle {
         return false;
     }
 
+    /**
+     * Metoda zmienia kolor pola jeżeli możliwe
+     * jest wykonanie strzału na tym polu.
+     * @return boolean
+     */
     public boolean highlightForShoot(){
         if(color == NORMAL){
             color = HIGHLIGHT;
@@ -58,6 +69,11 @@ public class MyRectangle extends Rectangle {
         return false;
     }
 
+    /**
+     * Metoda zmienia kolor pola jeżeli niemożliwe jest
+     * umiejscowienie na nim statku.
+     * @return boolean
+     */
     public boolean setError(){
         if(color!= SHIP && color!= MISSED && color!= HIT){
             color = ERROR;
@@ -66,6 +82,11 @@ public class MyRectangle extends Rectangle {
         return false;
     }
 
+    /**
+     * Metoda zmienia status i kolor pola na odpowiadający
+     * znajdowaniu się na tym polu części statku.
+     * @return boolean
+     */
     public boolean setShip(){
         if(color != ERROR && color != SHIP && status != Status.MISSED) {
             color = SHIP;
@@ -75,6 +96,11 @@ public class MyRectangle extends Rectangle {
         return false;
     }
 
+    /**
+     * Metoda zmienia kolor pola na normalny (biały)
+     * jeżeli nie znajduje się już na nim statek do ustawienia.
+     * @return boolean
+     */
     public boolean setNormalAfterHighlight(){
         if(color == ERROR || color == HIGHLIGHT){
             color = NORMAL;
@@ -83,16 +109,23 @@ public class MyRectangle extends Rectangle {
         return false;
     }
 
+    /**
+     * Metoda ustawia kolor i status statku na normalny (biały).
+     */
     public void hide(){
         color = NORMAL;
         if(status == Status.NEAR){
             status = Status.NORMAL;
         }
+//        //odkrywa statki komputera - do testow
 //        } else if(status == Status.SHIP){
 //            color = Color.DARK_GRAY;
 //        }
     }
 
+    /**
+     * Metoda ustawia kolor i status pola na SUNK - czarny.
+     */
     public void sunk(){
         color = SUNK;
         status = Status.SUNK;
@@ -106,6 +139,11 @@ public class MyRectangle extends Rectangle {
         return status;
     }
 
+    /**
+     * Ustawia status pola na NEAR.
+     * Wykorzystywana do określania czy możliwe jest ustawienie statku
+     * na danym polu. Wywoływana, jeżeli w polu obok znajduje się inny statek.
+     */
     public void setIsNearToShip(){
         if(status != Status.HIT && status != Status.MISSED)
             status = Status.NEAR;
@@ -119,6 +157,11 @@ public class MyRectangle extends Rectangle {
         return columnNumber;
     }
 
+    /**
+     * Metoda wywoływana podczas strzału. Ustawia odpowiedni status
+     * pola oraz jego kolor w zależności od statusu przed strzałem.
+     * @return boolean
+     */
     public boolean shoot(){
         switch (status) {
             case NORMAL:
@@ -157,7 +200,7 @@ public class MyRectangle extends Rectangle {
         this.probability += probability;
     }
 
-    public void decrease(int probability){
+    public void decreaseProbability(int probability){
         this.probability -= probability;
     }
 
@@ -178,6 +221,11 @@ public class MyRectangle extends Rectangle {
         this.color = color;
     }
 
+    /**
+     * Metoda określa czy możliwe jest wykonanie strzału do
+     * tego pola.
+     * @return boolean
+     */
     public boolean isForShoot(){
         if(status != Status.HIT && status != Status.MISSED && status != Status.SUNK)
             return true;

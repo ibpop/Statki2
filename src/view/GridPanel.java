@@ -1,7 +1,5 @@
 package view;
 
-
-
 import controller.GridPanelMouseListener;
 import model.MyRectangle;
 import model.MyRectangleContainer;
@@ -10,8 +8,12 @@ import model.ShipPosition;
 
 import javax.swing.*;
 import java.awt.*;
-
+/**
+ * Klasa odpowiada za wyświetlanie mapy graczy.
+ * @author blazej
+ */
 public class GridPanel extends JPanel {
+
     private final static int COLUMN_NUMBER = 10;
     private final static int ROW_NUMBER = 10;
     private MyRectangleContainer cells;
@@ -34,21 +36,15 @@ public class GridPanel extends JPanel {
 
         addMouseListener(gridPanelMouseListener);
         addMouseMotionListener(gridPanelMouseListener);
-
-        //mAllPoints = new  MyPointContainer();
-        //setBackground(Color.BLACK);
     }
 
     public void resetPoints() {
-        //mAllPoints.clear();
         repaint();
     }
 
     @Override
     public void invalidate() {
-        //cells.clear();
         initCells();
-        //selectedCell = null;
         super.invalidate();
     }
 
@@ -87,7 +83,6 @@ public class GridPanel extends JPanel {
         }
     }
 
-
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -105,9 +100,7 @@ public class GridPanel extends JPanel {
 
             }
         }
-
         g2d.dispose();
-
     }
 
     public static int getColumnNumber() {
@@ -126,7 +119,6 @@ public class GridPanel extends JPanel {
             lastMouseRowNumber = rowNumber;
             lastMouseColumnNumber = columnNumber;
             cells.highlightMyRectangle(rowNumber, columnNumber);
-
             this.repaint();
         }
     }
@@ -139,7 +131,6 @@ public class GridPanel extends JPanel {
             lastMouseRowNumber = rowNumber;
             lastMouseColumnNumber = columnNumber;
             cells.highlightShip(rowNumber, columnNumber, size, shipPosition, true);
-
             this.repaint();
         }
 
@@ -148,7 +139,6 @@ public class GridPanel extends JPanel {
     public boolean chooseLastShip() {
         return cells.chooseLastShip();
     }
-
 
     public static void setShipPosition(ShipPosition shipPosition) {
         GridPanel.shipPosition = shipPosition;
@@ -165,8 +155,9 @@ public class GridPanel extends JPanel {
     public int getRowFromY(int y) {
         int rowNumber = y / rowHeight;
 
-        if (rowNumber >= this.ROW_NUMBER)
+        if (rowNumber >= this.ROW_NUMBER) {
             rowNumber = this.ROW_NUMBER - 1;
+        }
 
         return rowNumber;
     }
@@ -174,8 +165,9 @@ public class GridPanel extends JPanel {
     public int getColumnFromX(int x) {
         int columnNumber = x / rowWidth;
 
-        if (columnNumber >= this.COLUMN_NUMBER)
+        if (columnNumber >= this.COLUMN_NUMBER) {
             columnNumber = this.COLUMN_NUMBER - 1;
+        }
 
         return columnNumber;
     }
@@ -192,7 +184,7 @@ public class GridPanel extends JPanel {
         cells.hideShips();
     }
 
-    public void shoot(int rowNumber, int columnNumber){
+    public void shoot(int rowNumber, int columnNumber) {
         cells.shoot(rowNumber, columnNumber);
         repaint();
     }
@@ -201,7 +193,7 @@ public class GridPanel extends JPanel {
         return cells.getLastHighlightedShip();
     }
 
-    public boolean isRectangleForShoot(int rowNumber, int columnNumber){
+    public boolean isRectangleForShoot(int rowNumber, int columnNumber) {
         return cells.isRectangleForShoot(rowNumber, columnNumber);
     }
 }

@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package controller;
+package model;
 
-/**
- *
- * @author blazej
- */
-public class NoNameException extends Exception {
+
+public class TimeoutException extends Exception {
+
+    public TimeoutException() {
+    }
     
 }

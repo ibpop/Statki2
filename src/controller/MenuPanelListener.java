@@ -1,5 +1,6 @@
 package controller;
 
+import model.NoNameException;
 import model.ComputerPlayer;
 import model.Player;
 import model.PlayerContainer;
@@ -13,7 +14,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import static javax.swing.JOptionPane.showMessageDialog;
 import model.DataPacket;
 import model.MyRectangleContainer;
 import network.MessageListener;
@@ -22,6 +22,14 @@ import network.EnemyShipsListener;
 import network.MyShipsSender;
 import static javax.swing.JOptionPane.showMessageDialog;
 
+/**
+ * Nasłuchuje na panelu MenuPanel. Tutaj ustawiane są
+ * nazwy graczy, wybierani rodzaje graczy: Komputer/Inna osoba. Tutaj są też dodawani
+ * do mapy graczy. Ogólnie pojęta inicjalizacja graczy.
+ * Wysyłane są informacje inicjalizacyjne przez sieć - w przypadku wyboru tego typu
+ * rozgrywki.
+ * @author blazej
+ */
 public class MenuPanelListener implements ActionListener {
 
     private static MainFrame mainFrame;
@@ -109,14 +117,25 @@ public class MenuPanelListener implements ActionListener {
                             try {
                                 MessageSender.init(InetAddress.getByName((mainFrame.getSpaceShipsPanel().getIp())), mainFrame.getSpaceShipsPanel().getPortSend());
                                 MessageListener.init(mainFrame.getSpaceShipsPanel().getPortReceive());
+                                if(mainFrame.getSpaceShipsPanel().getPortReceive() < 5000 || mainFrame.getSpaceShipsPanel().getPortReceive() > 10000){
+                                    throw new NumberFormatException();
+                                }
+                                if(mainFrame.getSpaceShipsPanel().getPortSend()< 5000 || mainFrame.getSpaceShipsPanel().getPortSend() > 10000){
+                                    throw new NumberFormatException();
+                                }
+                                if(mainFrame.getSpaceShipsPanel().getPortSend() == mainFrame.getSpaceShipsPanel().getPortReceive()){
+                                    throw new NumberFormatException();
+                                }
+                                
                                 mainFrame.setMessageSender(MessageSender.getInstance());
                                 mainFrame.setMessageListener(MessageListener.getInstance());
 
-                                mainFrame.getMessageSender().send(new DataPacket(PlayerContainer.PlayerType.ME, -1, -1, -1));
+                                mainFrame.getMessageSender().send(new DataPacket(PlayerContainer.PlayerType.ME, -1, -1, myShipsLeft));
                                 mainFrame.setTurn(PlayerContainer.PlayerType.ENEMY);
                                 mainFrame.getMessageListener().listen();
 
                                 //TODO: wyslanie info o swoich statkach i pobranie od przeciwnika
+                                //serializacja
 //                                MyShipsSender.init(InetAddress.getByName((mainFrame.getSpaceShipsPanel().getIp())), mainFrame.getSpaceShipsPanel().getPortSend()+2);
 //                                EnemyShipsListener.init(mainFrame.getSpaceShipsPanel().getPortReceive()+2);
 //                                
@@ -136,6 +155,7 @@ public class MenuPanelListener implements ActionListener {
                             } catch (IOException ex) {
                                 Logger.getLogger(MenuPanelListener.class.getName()).log(Level.SEVERE, null, ex);
                             }
+                            mainFrame.setStarted(System.currentTimeMillis());
                             break;
                     }
                     break;
