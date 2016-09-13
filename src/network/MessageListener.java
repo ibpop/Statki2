@@ -1,11 +1,13 @@
 package network;
 
+import model.BadDataException;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 import model.DataPacket;
 import model.MyRectangleContainer;
@@ -84,9 +86,16 @@ public class MessageListener {
                             } else if (dataReceived.startsWith("1")) {
                                 mainFrame.handleCallback(dataReceived);
                             }
+                            else{
+                                throw new BadDataException();
+                            }
                         }
                     } catch (IOException ex) {
                         Logger.getLogger(MessageListener.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (BadDataException ex) {
+                        Logger.getLogger(MessageListener.class.getName()).log(Level.SEVERE, null, ex);
+                        JOptionPane.showMessageDialog(null, "Otrzymano złe dane. Aplikacja zostanie zamknięta!");
+                        System.exit(0);
                     }
                 }
             }
