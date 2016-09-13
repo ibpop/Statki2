@@ -8,12 +8,20 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import model.DataPacket;
+import model.MyRectangle;
+import model.MyRectangleContainer;
 
 public class GridPanelMouseListener implements MouseListener, MouseMotionListener {
 
     private PlayerContainer playerContainer;
     private int currentShipSize;
     private MainFrame mainFrame;
+    private boolean receiveEnemyMap = false;
+    private boolean sendMyMap = false;
 
     public GridPanelMouseListener() {
         playerContainer = PlayerContainer.getInstance();
@@ -33,34 +41,98 @@ public class GridPanelMouseListener implements MouseListener, MouseMotionListene
                 }
                 break;
             case GAME:
-                int rowNumber = component.getRowFromY(e.getY());
-                int columnNumber = component.getColumnFromX(e.getX());
-                if(component.isRectangleForShoot(rowNumber, columnNumber)){
-
-                    playerContainer.shootEnemy(rowNumber, columnNumber);
-                    if (playerContainer.isEnemyBeaten()) {
-                        mainFrame.setFinishedPanel("Wygrałeś");
-                        break;
-                    }
-                    component.shoot(rowNumber, columnNumber);
-
-                    Point point = playerContainer.getEnemyShoot();
-                    int enemyShootRow = (int) point.getY();
-                    int enemyShootColumn = (int) point.getX();
-                    playerContainer.shootMe(enemyShootRow, enemyShootColumn);
-
+                int rowNumber = 0;
+                int columnNumber = 0;
+                if (mainFrame == null) {
                     mainFrame = MainFrame.getInstance();
-                    mainFrame.shootMe(enemyShootRow, enemyShootColumn);
+                }
+                switch (mainFrame.getGameMode()) {
+                    case VS_COMPUTER:
 
-                    int myShipsLeft = playerContainer.getCurrentPlayer().getNumberOfShips();
-                    mainFrame.getMyShipPanel().setLabel(myShipsLeft);
+                        rowNumber = component.getRowFromY(e.getY());
+                        columnNumber = component.getColumnFromX(e.getX());
+                        if (component.isRectangleForShoot(rowNumber, columnNumber)) {
+                            playerContainer.shootEnemy(rowNumber, columnNumber);
+                            if (playerContainer.isEnemyBeaten()) {
+                                mainFrame.setFinishedPanel("Wygrałeś");
+                                break;
+                            }
+                            component.shoot(rowNumber, columnNumber);
 
-                    int enemyShipsLeft = playerContainer.getEnemyPlayer().getNumberOfShips();
-                    mainFrame.getEnemyShipPanel().setLabel(enemyShipsLeft);
+                            Point point = playerContainer.getEnemyShoot();
+                            int enemyShootRow = (int) point.getY();
+                            int enemyShootColumn = (int) point.getX();
+                            playerContainer.shootMe(enemyShootRow, enemyShootColumn);
 
-                    if (playerContainer.isMeBeaten()) {
-                        mainFrame.setFinishedPanel("Przegrałeś");
-                    }
+                            mainFrame = MainFrame.getInstance();
+                            mainFrame.shootMe(enemyShootRow, enemyShootColumn);
+
+                            int myShipsLeft = playerContainer.getCurrentPlayer().getNumberOfShips();
+                            mainFrame.getMyShipPanel().setLabel(myShipsLeft);
+
+                            int enemyShipsLeft = playerContainer.getEnemyPlayer().getNumberOfShips();
+                            mainFrame.getEnemyShipPanel().setLabel(enemyShipsLeft);
+
+                            if (playerContainer.isMeBeaten()) {
+                                mainFrame.setFinishedPanel("Przegrałeś");
+                            }
+                        }
+                        break;
+                    case VS_HUMAN:
+//                         if (System.currentTimeMillis() - started > 10) {
+//                            try {
+//                                throw new TimeoutException();
+//                            } catch (TimeoutException ex) {
+//                                Logger.getLogger(MessageListener.class.getName()).log(Level.SEVERE, null, ex);
+//                                JOptionPane.showMessageDialog(null,"Brak drugiego gracza. Aplikacja zostanie wyłączona.");
+//                                System.exit(0);
+//                            }
+//                        }
+                        if (mainFrame.getTurn() == PlayerContainer.PlayerType.ENEMY) {
+
+//                            if (!receiveEnemyMap) {
+//                                MyRectangleContainer myShips = mainFrame.getMySpaceShipRectangles();
+//                                
+//                                try {
+//                                    mainFrame.getMessageSender().sendMyShips(myShips);
+//                                } catch (IOException ex) {
+//                                    Logger.getLogger(GridPanelMouseListener.class.getName()).log(Level.SEVERE, null, ex);
+//                                }
+//                                mainFrame.getMessageListener().listenForShips();
+//                                receiveEnemyMap = true;
+//                            }
+                            //nie pozwol na wykonanie strzalu jak nie twoja kolej
+                            //czyli nic nie rob
+                        } else {
+//                            if(!receiveEnemyMap){
+//                                mainFrame.getEnemyShipsListener().listenForShips();
+//                                receiveEnemyMap = true;
+//                            }
+                            int myShipsLeft = playerContainer.getCurrentPlayer().getNumberOfShips();
+                            mainFrame.getMyShipPanel().setLabel(myShipsLeft);
+                            if (playerContainer.getCurrentPlayer().getNumberOfShips() == 0) {
+                                mainFrame.setFinishedPanel("Przegrałeś");
+                            }
+                            rowNumber = component.getRowFromY(e.getY());
+                            columnNumber = component.getColumnFromX(e.getX());
+                            if (component.isRectangleForShoot(rowNumber, columnNumber)) {
+//                                playerContainer.shootEnemy(rowNumber, columnNumber);
+//                                if (playerContainer.isEnemyBeaten()) {
+//                                    mainFrame.setFinishedPanel("Wygrałeś");
+//                                    break;
+//                                }
+                                try {
+                                    mainFrame.getMessageSender().send(new DataPacket(PlayerContainer.PlayerType.ME, rowNumber, columnNumber, playerContainer.getCurrentPlayer().getNumberOfShips()));
+                                } catch (IOException ex) {
+                                    Logger.getLogger(GridPanelMouseListener.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                                component.shoot(rowNumber, columnNumber);
+                                mainFrame.setTurn(PlayerContainer.PlayerType.ENEMY);
+                            } 
+                            
+                        }
+                        break;
+
                 }
                 break;
         }

@@ -1,5 +1,6 @@
 package view;
 
+import controller.NoNameException;
 import controller.MenuPanelListener;
 import model.PlayerContainer;
 
@@ -61,16 +62,17 @@ public class PlayerPanel extends JPanel {
         //playerName.addActionListener(menuPanelListener);
     }
 
-    public String getPlayerName(){
+    public String getPlayerName() throws NoNameException{
+        if(playerName.getText().length() == 0) throw new NoNameException();
         return playerName.getText();
     }
 
     public PlayerContainer.GameMode getGameMode(){
         if(vsComputerButton.isSelected())
             return PlayerContainer.GameMode.VS_COMPUTER;
-        else if(vsHumanButton.isSelected())
+        else
             return PlayerContainer.GameMode.VS_HUMAN;
-        return null;
+        
     }
 
 

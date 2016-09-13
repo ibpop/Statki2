@@ -1,11 +1,12 @@
 package model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by Mateo on 2016-08-28.
  */
-public class Ship {
+public class Ship implements Serializable{
 
     private int size;
     private int beginRow;
