@@ -1,17 +1,21 @@
 package model;
 
-
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Random;
 
 /**
- * Created by Mateo on 2016-08-22.
+ * Klasa dzieczicząca po klasie Player. Ta klasa odpowiada za
+ * implementację logiki komputera podczas rozgrywki.
+ * @author blazej
  */
 public class ComputerPlayer extends Player {
-    public static enum ShootingMode {HUNT, TARGET};
+
+    public static enum ShootingMode {
+        HUNT, TARGET
+    };
     public ShootingMode shootingMode = ShootingMode.HUNT;
-    private int [] shipToHit;
+    private int[] shipToHit;
     private MyRectangleContainer myShoots;
     private MyRectangle lastShoot;
     private Ship hittedShip;
@@ -20,14 +24,18 @@ public class ComputerPlayer extends Player {
         super(name);
         shipToHit = new int[shipToSet.length];
 
-        for(int i=0; i < shipToSet.length; i++){
+        for (int i = 0; i < shipToSet.length; i++) {
             shipToHit[i] = shipToSet[i];
         }
         hittedShip = new Ship();
 
     }
 
-    public void setMyShips(){
+    /**
+     * Ustawia statki komputera na planszy. Wybór dokonywany
+     * jest losowo do momentu aż wszystkie statki zostaną prawidłowo umiejscowione.
+     */
+    public void setMyShips() {
         int shipSize = getShipSizeToSet();
         int beginRow, beginColumn;
         ShipPosition shipPosition;
@@ -36,8 +44,9 @@ public class ComputerPlayer extends Player {
 
         while (true) {
             shipSize = getShipSizeToSet();
-            if(shipSize == 0)
+            if (shipSize == 0) {
                 break;
+            }
             while (true) {
                 beginRow = rand.nextInt(rowNumber);
                 beginColumn = rand.nextInt(columnNumber);
@@ -45,22 +54,25 @@ public class ComputerPlayer extends Player {
                 //shipPosition = ShipPosition.HORIZONTAL;
                 myRectangles.highlightShip(beginRow, beginColumn, shipSize, shipPosition, false);
                 flag = myRectangles.chooseLastShip();
-                if(flag){
+                if (flag) {
                     break;
                 }
             }
             setShip(shipSize, myRectangles.getLastHighlightedShip());
-
         }
-
     }
 
-    public Point getShoot(){
+    /**
+     * Logika odpowiedzialna za wykonanie strzału.
+     * Zwraca współrzędne pola, w które strzela komputer.
+     * @return Point - Klasa
+     */
+    public Point getShoot() {
         Random rand = new Random();
         int shootColumn = rand.nextInt(columnNumber);
         int shootRow = rand.nextInt(rowNumber);
 
-        if(myShoots == null){
+        if (myShoots == null) {
             myShoots = new MyRectangleContainer(myRectangles.getMyRectangles());
             myShoots.clear();
         }
@@ -73,47 +85,42 @@ public class ComputerPlayer extends Player {
         shootColumn = lastShoot.getColumnNumber();
         shootRow = lastShoot.getRowNumber();
         System.out.println(shootRow + " " + shootColumn);
-        /*switch (shootingMode){
-            case HUNT:
-
-                //myShoots.getRectangle(shootRow, shootColumn).shoot();
-                break;
-            case TARGET:
-                System.out.println("TARGET MODE");
-
-                break;
-        }*/
-
         return new Point(shootColumn, shootRow);
     }
-
-    private void setProbabilityForShoot(){
-
-        for(int i=0; i < shipToHit.length; i++){
-            if(shipToHit[i] > 0){
-                for(int j = 0; j < shipToHit[i]; j++) {
+/**
+ * Ustawia prawdopodobieństwo znalezienia się
+ * statku w danym polu na mapie.
+ */
+    private void setProbabilityForShoot() {
+        for (int i = 0; i < shipToHit.length; i++) {
+            if (shipToHit[i] > 0) {
+                for (int j = 0; j < shipToHit[i]; j++) {
                     setProbabilityForShip(i + 1, ShipPosition.HORIZONTAL);
                     setProbabilityForShip(i + 1, ShipPosition.VERTICAL);
                 }
             }
         }
     }
-
-    private void setProbabilityForShip(int shipSize, ShipPosition position){
+/**
+ * Ustawia prawdopodobieństwo znalezienia się
+ * w danym polu dla wybranego rodzaju statku.
+ * @param shipSize rozmiar statku
+ * @param position pozycja: Pionowa, Pozioma
+ */
+    private void setProbabilityForShip(int shipSize, ShipPosition position) {
         MyRectangleContainer tmp = new MyRectangleContainer(myShoots.getMyRectangles());
         tmp.hideShips();
         for (int i = 0; i < rowNumber; i++) {
             for (int j = 0; j < columnNumber; j++) {
                 tmp.highlightShip(i, j, shipSize, position, false);
-                if (tmp.chooseLastShip()){
+                if (tmp.chooseLastShip()) {
                     int probability = 1;
 
-                    if(shootingMode == ShootingMode.TARGET && isShipContainsHitted(tmp.getLastHighlightedShip())){
+                    if (shootingMode == ShootingMode.TARGET && isShipContainsHitted(tmp.getLastHighlightedShip())) {
                         probability = 10;
                     }
 
-                    for(MyRectangle rect : tmp.getLastHighlightedShip().getMyRectangles()){
-                        //System.out.println(rect.getRowNumber() + " " + rect.getColumnNumber() + " position " + tmp.getLastHighlightedShip().getShipPosition());
+                    for (MyRectangle rect : tmp.getLastHighlightedShip().getMyRectangles()) {
                         myShoots.getRectangle(rect.getRowNumber(), rect.getColumnNumber()).increaseProbability(probability);
                     }
                     tmp.removeLastShip();
@@ -122,31 +129,40 @@ public class ComputerPlayer extends Player {
                 }
                 tmp.hideShips();
             }
-            //break;
         }
     }
-
-    private boolean isShipContainsHitted(Ship ship){
-
-        if(hittedShip != null){
-            for(MyRectangle rect : hittedShip.getMyRectangles() ){
-                if(ship.contains(rect.getRowNumber(), rect.getColumnNumber()))
+/**
+ * Sprawdza czy dany statek został trafiony.
+ * @param ship Statek, który ma zostać sprawdzony.
+ * @return prawda lub fałsz
+ */
+    private boolean isShipContainsHitted(Ship ship) {
+        if (hittedShip != null) {
+            for (MyRectangle rect : hittedShip.getMyRectangles()) {
+                if (ship.contains(rect.getRowNumber(), rect.getColumnNumber())) {
                     return true;
+                }
             }
         }
         return false;
     }
 
-    public void setLastShootStatus(MyRectangle.Status status, boolean lastShootDestructive){
+    /**
+     * Ustawia stan komputera w jaki ma przejść po
+     * oddanym strzale.
+     * @param status jaki status ustawić 
+     * @param lastShootDestructive czy ostatni strzał zniszczył statek
+     */
+    public void setLastShootStatus(MyRectangle.Status status, boolean lastShootDestructive) {
         lastShoot.setStatus(status);
-        switch(status){
+        switch (status) {
             case NORMAL:
                 break;
             case SHIP:
                 break;
             case HIT:
-                System.out.println("lastShootDestructive "+ lastShootDestructive);
-                if(shootingMode == ShootingMode.HUNT && !lastShootDestructive){
+                System.out.println("lastShootDestructive " + lastShootDestructive);
+                if (shootingMode == ShootingMode.HUNT && !lastShootDestructive) {
                     shootingMode = ShootingMode.TARGET;
                 }
                 hittedShip.addRectangles(lastShoot);
@@ -165,6 +181,5 @@ public class ComputerPlayer extends Player {
                 hittedShip.clear();
                 break;
         }
-
     }
 }

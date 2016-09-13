@@ -9,7 +9,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * Created by Mateo on 2016-08-17.
+ * Nasłuchuje dwa przyciski pozwalające na zmianę
+ * ustawienia statku podczas ich rozstawiania w panelu SpaceShipPanel.
+ * @author blazej
  */
 public class PositionButtonListener implements ActionListener {
 

@@ -9,11 +9,14 @@ import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import model.DataPacket;
 import model.MyRectangleContainer;
 import model.PlayerContainer;
 import view.MainFrame;
-
+/**
+ * Listener do wysyłania informacji o swojej mapie. Używany przy ewentualnej
+ * serializacji.
+ * @author blazej
+ */
 public class EnemyShipsListener {
 
     private static DatagramSocket receiveSocket;
@@ -49,19 +52,6 @@ public class EnemyShipsListener {
         mainFrame = MainFrame.getInstance();
     }
 
-//    public DataPacket listen() throws IOException {
-//        //receiveSocket = new DatagramSocket(MessageListener.port);
-//        receiveData = new byte[32];
-//        while (true) {
-//            DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
-//            receiveSocket.receive(receivePacket);
-//            String dataReceived = new String(receivePacket.getData());
-//            System.out.println("Received: " + dataReceived);
-//           // receiveSocket.close();
-//            return DataPacket.stringToDataPacket(dataReceived);
-//        }
-//
-//    }
     public void listenForShips() {
         new Thread(new Runnable() {
             
@@ -79,7 +69,6 @@ public class EnemyShipsListener {
                             callbackSent = true;
                             receiveSocket.close();
                         }
-                       
                        
                         ByteArrayInputStream bis = new ByteArrayInputStream(enemyShipsBytes);
                         ObjectInputStream in = null;

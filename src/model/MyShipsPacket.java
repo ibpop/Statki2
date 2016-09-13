@@ -1,5 +1,9 @@
 package model;
 
+/**
+ * Używana potencjalnie przy serializacji.
+ * @author blazej
+ */
 public class MyShipsPacket {
 
     private MyRectangleContainer myMap;

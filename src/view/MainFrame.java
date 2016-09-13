@@ -2,7 +2,7 @@ package view;
 
 import controller.GridPanelMouseListener;
 import controller.MenuPanelListener;
-import controller.NoNameException;
+import model.NoNameException;
 import model.MyRectangleContainer;
 import model.PlayerContainer;
 
@@ -19,13 +19,19 @@ import network.MessageListener;
 import network.MessageSender;
 import network.MyShipsSender;
 import static javax.swing.JOptionPane.showMessageDialog;
-
+import static javax.swing.JOptionPane.showMessageDialog;
+import static javax.swing.JOptionPane.showMessageDialog;
+/**
+ * Klasa definiująca główną ramkę gry - jej okno. W niej znajdują się wszystkie
+ * panele.
+ * @author blazej
+ */
 public class MainFrame extends JFrame {
 
     private MenuPanel menuPanel;
     private GamePanel myShipPanel, enemyShipPanel;
     private PlayerContainer.PlayerType turn;
-    private static long started;
+    private long started;
 
     private MessageSender messageSender;
     private MessageListener messageListener;
@@ -38,29 +44,27 @@ public class MainFrame extends JFrame {
     private JMenuBar menuBar;
     private JMenu menu;
     private JMenuItem closeMenuItem;
-    //private MyComponentListener mMyComponentListener;
     private static MainFrame mainFrame = new MainFrame();
     private GridBagConstraints gridBagConstraints;
     private PlayerPanel playerPanel;
     private PlayerContainer playerContainer;
     private MenuPanelListener menuPanelListener;
+    private boolean bothPlayersPresent;
 
     private MainFrame() {
         super();
+        this.bothPlayersPresent = false;
         playerContainer = PlayerContainer.getInstance();
 
         playerPanel = new PlayerPanel();
 
         myShipPanel = new GamePanel("Moje statki");
-        //myShipPanel.setLabel();
         enemyShipPanel = new GamePanel("Statki wroga");
-        //enemyShipPanel.setLabel(5);
         spaceShipsPanel = new SpaceShipPanel();
 
         allPanel = new JPanel();
 
         menuPanel = new MenuPanel();
-        //mMyComponentListener = new MyComponentListener();
         gridBagConstraints = new GridBagConstraints();
         allPanel.setLayout(new GridBagLayout());
         allPanel.add(menuPanel, gridBagConstraints);
@@ -85,7 +89,9 @@ public class MainFrame extends JFrame {
         pack();
         setVisible(true);
     }
-
+/**
+ * Metoda ustawiająca panel gracza.
+ */
     public void setPlayerPanel() {
         allPanel.remove(menuPanel);
         allPanel.add(playerPanel);
@@ -105,22 +111,22 @@ public class MainFrame extends JFrame {
         gridBagConstraints.gridx = 0;
         allPanel.add(enemyShipPanel, gridBagConstraints);
 
-        //MyRectangleContainer tmp = new MyRectangleContainer(spaceShipsPanel.getGamePanel().getCells().getMyRectangles());
         enemyShipPanel.setCells(playerContainer.getEnemyShip());
         playerContainer.getEnemyShip().getMyRectangles();
 
         gridBagConstraints.gridx = 1;
         myShipPanel.removeAllListeners();
-        //myShipPanel.setCells(new MyRectangleContainer(spaceShipsPanel.getGamePanel().getCells().getMyRectangles()));
         myShipPanel.setCells(spaceShipsPanel.getGamePanel().getCells());
 
         allPanel.add(myShipPanel, gridBagConstraints);
 
-        //mGamePanel.addComponentListener(mMyComponentListener);
         validate();
         repaint();
     }
-
+/**
+ * Metoda ustawiająca okno gry podczas jej zakończenia.
+ * @param message 
+ */
     public void setFinishedPanel(String message) {
         JPanel finishedPanel = new JPanel();
         finishedPanel.add(new JLabel(message));
@@ -134,7 +140,9 @@ public class MainFrame extends JFrame {
     public static MainFrame getInstance() {
         return mainFrame;
     }
-
+/**
+ * Metoda ustawiająca panel rozmieszczania statków na mapie.
+ */
     public void setSpaceShipsPanel() {
         allPanel.remove(playerPanel);
         gridBagConstraints.weightx = 1;
@@ -157,7 +165,11 @@ public class MainFrame extends JFrame {
     public void hideEnemyShips() {
         enemyShipPanel.hideShips();
     }
-
+/**
+ * Metoda wykonująca strzał w zadane pole gracza.
+ * @param rowNumber
+ * @param columnNumber 
+ */
     public void shootMe(int rowNumber, int columnNumber) {
         myShipPanel.shoot(rowNumber, columnNumber);
     }
@@ -213,7 +225,11 @@ public class MainFrame extends JFrame {
     public void setEnemyShipsListener(EnemyShipsListener enemyShipsListener) {
         this.enemyShipsListener = enemyShipsListener;
     }
-
+/**
+ * Metoda odpowiadająca za obsługę informacji uzyskanych od przeciwnika
+ * poprzez sieć.
+ * @param dataReceived 
+ */
     public void handleShoot(DataPacket dataReceived) {
         int column = dataReceived.getColumn();
         int row = dataReceived.getRow();
@@ -224,6 +240,7 @@ public class MainFrame extends JFrame {
             playerContainer.shootMeOnline(row, column);
             shootMe(row, column);
             int myShipsLeft = playerContainer.getCurrentPlayer().getNumberOfShips();
+            getEnemyShipPanel().setLabel(shipsLeft);
             try {
                 switch (playerContainer.getCurrentPlayer().getMyRectangles().getRectangle(row, column).getStatus()) {
                     case MISSED:
@@ -242,7 +259,11 @@ public class MainFrame extends JFrame {
         }
         mainFrame.setTurn(PlayerContainer.PlayerType.ME);
     }
-
+/**
+ * Metoda odpowiadająca za obsługę informacji zwrotnych uzyskanych od przeciwnika po
+ * wykonaniu strzału przez gracza.
+ * @param dataReceived 
+ */
     public void handleCallback(String dataReceived) {
         String[] data = dataReceived.split(" ");
         int rowNumber = Integer.parseInt(data[2]);
@@ -265,15 +286,23 @@ public class MainFrame extends JFrame {
         }
     }
 
-    public static long getStarted() {
+    public long getStarted() {
         return started;
     }
 
-    public static void setStarted(long started) {
-        MainFrame.started = started;
+    public void setStarted(long started) {
+        this.started = started;
     }
 
     public GamePanel getMyShipPanel() {
         return myShipPanel;
+    }
+
+    public void setBothPlayersPresent() {
+        this.bothPlayersPresent = true;
+    }
+    
+    public boolean isBothPlayersPresent() {
+        return bothPlayersPresent;
     }
 }

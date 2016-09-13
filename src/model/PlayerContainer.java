@@ -5,51 +5,61 @@ import java.util.EnumMap;
 import java.util.Map;
 
 /**
- * Created by Mateo on 2016-08-15.
+ * Klasa-kontener. Przechowuje graczy. Singleton.
+ *
+ * @author blazej
  */
 public class PlayerContainer {
 
-    public static enum PlayerType {ME, ENEMY};
-    public static enum GameState {SPACE_SHIP, GAME};
-    public static enum GameMode {VS_COMPUTER, VS_HUMAN};
+    public static enum PlayerType {
+        ME, ENEMY
+    };
+
+    public static enum GameState {
+        SPACE_SHIP, GAME
+    };
+
+    public static enum GameMode {
+        VS_COMPUTER, VS_HUMAN
+    };
 
     private static PlayerContainer playerContainer = new PlayerContainer();
     private PlayerType currentPlayerType;
     private PlayerType enemy;
 
-    public Player getEnemyPlayer(){
-        return playersMap.get(enemy);
-    }
     private Map<PlayerType, Player> playersMap;
     private static GameState gameState;
     private GameMode gameMode;
 
-
-    private PlayerContainer(){
+    private PlayerContainer() {
         playersMap = new EnumMap<PlayerType, Player>(PlayerType.class);
         currentPlayerType = PlayerType.ME;
         enemy = PlayerType.ENEMY;
     }
 
-    public static PlayerContainer getInstance(){
+    public static PlayerContainer getInstance() {
         return playerContainer;
     }
 
-    public void addPlayer(Player player){
-        if(!playersMap.containsKey(PlayerType.ME)){
+    /**
+     * Dodaje gracza do kolekcji graczy. (Tutaj do mapy.)
+     * @param player dodawany gracz
+     */
+    public void addPlayer(Player player) {
+        if (!playersMap.containsKey(PlayerType.ME)) {
             playersMap.put(PlayerType.ME, player);
-        }else if(!playersMap.containsKey(PlayerType.ENEMY)){
+        } else if (!playersMap.containsKey(PlayerType.ENEMY)) {
             playersMap.put(PlayerType.ENEMY, player);
-        } else{
+        } else {
             System.out.println("Obaj zawodnicy zostali dodani");
         }
     }
 
-    public Player getCurrentPlayer(){
+    public Player getCurrentPlayer() {
         return playersMap.get(currentPlayerType);
     }
 
-    public void setGameState(GameState gameState){
+    public void setGameState(GameState gameState) {
         this.gameState = gameState;
     }
 
@@ -57,55 +67,74 @@ public class PlayerContainer {
         return gameState;
     }
 
-    public void initEnemyShip(){
+    /**
+     * Metoda odpowiada za zainicjowanie mapy komputera. Ustawia statki na jego
+     * mapie.
+     */
+    public void initEnemyShip() {
         ComputerPlayer player = (ComputerPlayer) playersMap.get(PlayerType.ENEMY);
         player.setMyShips();
     }
 
-    public MyRectangleContainer getEnemyShip(){
-        return  playersMap.get(PlayerType.ENEMY).getMyRectangles();
+    public MyRectangleContainer getEnemyShip() {
+        return playersMap.get(PlayerType.ENEMY).getMyRectangles();
     }
 
-    public void shootEnemy(int rowNumber, int columnNumber){
+    public void shootEnemy(int rowNumber, int columnNumber) {
         playersMap.get(PlayerType.ENEMY).shoot(rowNumber, columnNumber);
     }
 
-    public void setPlayersShip(PlayerType playerType, MyRectangleContainer myRectangleContainer){
+    public void setPlayersShip(PlayerType playerType, MyRectangleContainer myRectangleContainer) {
         playersMap.get(playerType).setMyRectangles(myRectangleContainer);
     }
-
-    public Point getEnemyShoot(){
+/**
+ * Metoda wykonuje strzał przeciwnika na polach gracza.
+ * @return punkt strzału
+ */
+    public Point getEnemyShoot() {
         ComputerPlayer player = (ComputerPlayer) playersMap.get(PlayerType.ENEMY);
         return player.getShoot();
     }
-    
-    public void shootMeOnline(int rowNumber, int columnNumber){
+/**
+ * Metoda do wykonania strzału przeciwnika podczas gry online. Czyli ustawia
+ * odpowiedni status na mojej mapie statków.
+ * @param rowNumber
+ * @param columnNumber 
+ */
+    public void shootMeOnline(int rowNumber, int columnNumber) {
         playersMap.get(PlayerType.ME).shoot(rowNumber, columnNumber);
-    
-    }
 
-    public void shootMe(int rowNumber, int columnNumber){
+    }
+/**
+ * Metoda do wykonania strzału przeciwnika podczas gry z komputerem.
+ * Ustawia odpowiedni status zadanego pola na mapie gracza.
+ * @param rowNumber
+ * @param columnNumber 
+ */
+    public void shootMe(int rowNumber, int columnNumber) {
         playersMap.get(PlayerType.ME).shoot(rowNumber, columnNumber);
         ComputerPlayer computerPlayer = (ComputerPlayer) playersMap.get(PlayerType.ENEMY);
         computerPlayer.setLastShootStatus(playersMap.get(PlayerType.ME).getMyRectangles().getRectangle(rowNumber, columnNumber).getStatus(), playersMap.get(PlayerType.ME).isLastShootDestructive());
-        
+
     }
 
     public void setGameMode(GameMode gameMode) {
         this.gameMode = gameMode;
     }
 
-    public boolean isEnemyBeaten(){
+    public boolean isEnemyBeaten() {
         return playersMap.get(PlayerType.ENEMY).isBeaten();
     }
 
-    public boolean isMeBeaten(){
+    public boolean isMeBeaten() {
         return playersMap.get(PlayerType.ME).isBeaten();
     }
 
-    public void setMyShips(MyRectangleContainer myRectangleContainer){
+    public void setMyShips(MyRectangleContainer myRectangleContainer) {
         playersMap.get(PlayerType.ME).setMyRectangles(myRectangleContainer);
     }
 
-
+    public Player getEnemyPlayer() {
+        return playersMap.get(enemy);
+    }
 }

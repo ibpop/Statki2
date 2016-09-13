@@ -2,9 +2,9 @@ package model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-
 /**
- * Created by Mateo on 2016-08-28.
+ * Klasa reprezentująca statek.
+ * @author blazej
  */
 public class Ship implements Serializable{
 
@@ -91,7 +91,12 @@ public class Ship implements Serializable{
         }
         return true;
     }
-
+/**
+ * Metoda sprawdza czy na zadanym polu znajduje się statek.
+ * @param rowNumber
+ * @param columnNumber
+ * @return boolean
+ */
     public boolean contains(int rowNumber, int columnNumber){
         for(MyRectangle rect : myRectangles){
             if(rect.getColumnNumber() == columnNumber && rect.getRowNumber() == rowNumber)

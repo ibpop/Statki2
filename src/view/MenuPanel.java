@@ -4,7 +4,10 @@ import controller.MenuPanelListener;
 
 import javax.swing.*;
 import java.awt.*;
-
+/**
+ * Klasa reprezentująca początkowy panel gry.
+ * @author blazej
+ */
 public class MenuPanel extends JPanel {
     private JButton newGameButton;
     private JButton exitButton;
@@ -13,7 +16,6 @@ public class MenuPanel extends JPanel {
 
     public MenuPanel(){
         super();
-        //setPreferredSize(new Dimension(getToolkit().getScreenSize().height / 2, getToolkit().getScreenSize().width / 2));
         setPreferredSize(new Dimension(100, 100));
 
         newGameButton = new JButton("Nowa gra");
@@ -28,6 +30,5 @@ public class MenuPanel extends JPanel {
 
         add(newGameButton);
         add(exitButton);
-
     }
 }
