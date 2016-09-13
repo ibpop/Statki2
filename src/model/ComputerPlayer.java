@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 /**
- * Klasa dzieczicząca po klasie Player. Ta klasa odpowiada za
+ * Klasa dziedzicząca po klasie Player. Ta klasa odpowiada za
  * implementację logiki komputera podczas rozgrywki.
  * @author blazej
  */
@@ -117,7 +117,7 @@ public class ComputerPlayer extends Player {
                     int probability = 1;
 
                     if (shootingMode == ShootingMode.TARGET && isShipContainsHitted(tmp.getLastHighlightedShip())) {
-                        probability = 10;
+                        probability = 30;
                     }
 
                     for (MyRectangle rect : tmp.getLastHighlightedShip().getMyRectangles()) {

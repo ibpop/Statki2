@@ -344,7 +344,7 @@ public class MyRectangleContainer implements Serializable {
         System.out.println("--------------");
         for (int i = 0; i < rowNumber; i++) {
             for (int j = 0; j < columnNumber; j++) {
-                System.out.print(String.format("%1$3s", myRectangles[i][j].getProbability()));
+                System.out.print(String.format("%1$4s", myRectangles[i][j].getProbability()));
             }
             System.out.println();
         }

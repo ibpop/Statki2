@@ -9,7 +9,7 @@ import model.ShipPosition;
 import javax.swing.*;
 import java.awt.*;
 /**
- * Klasa odpowiada za wyświetlanie mapy graczy.
+ * Klasa odpowiada za wyświetlanie planszy graczy.
  * @author blazej
  */
 public class GridPanel extends JPanel {

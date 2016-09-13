@@ -6,7 +6,6 @@ import controller.PositionButtonListener;
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicArrowButton;
 import java.awt.*;
-import sun.text.normalizer.CharTrie;
 /**
  * Klasa reprezentująca widok gry, który odpowiada za rozstawienie statków.
  * @author blazej
