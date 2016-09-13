@@ -9,9 +9,6 @@ package model;
  *
  * @author blazej
  */
-public class BadDataException extends Exception {
-
-    public BadDataException() {
-    }
+public class BadDataException extends Exception{
     
 }
